@@ -35,7 +35,7 @@ app.get('/api/hello', function(req, res) {
 
 // FreeCodeCamp Challenge
 app.post('/api/shorturl', async function(req, res){
-   const longUrl=req.body.url;
+   const longUrl = req.body.url;
    if(!longUrl) return;
 
    const response = {
@@ -43,7 +43,7 @@ app.post('/api/shorturl', async function(req, res){
     short_url: ""
    };
 
-   const findedUrl = await controller.findUrl(longUrl);
+   const findedUrl = await controller.findExistingUrl(longUrl);
 
    if(findedUrl.length===0){
     const shortUrl=uid.randomUUID();
@@ -57,8 +57,21 @@ app.post('/api/shorturl', async function(req, res){
    }
 
    res.json(response);
+});
 
-})
+app.get('/api/shorturl/:id', async function(req, res){
+    const id = req.params.id;
+    if(!id) return;
+
+    console.log(id);
+
+    const result = await controller.findId(id);
+
+    console.log(result);
+    
+    
+    res.redirect(result[0].original_url);
+});
 
 app.listen(port, function() {
   console.log(`Listening on port ${port}`);

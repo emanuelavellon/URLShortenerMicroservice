@@ -1,6 +1,6 @@
 const Model = require('./model');
 
-async function findUrl(original_url){
+async function findExistingUrl(original_url){
     return new Promise((resolve, reject)=>{
         Model.find({original_url: original_url})
         .exec()
@@ -10,8 +10,20 @@ async function findUrl(original_url){
         .catch(e=>{
             reject(e);
         })
-    });
-    
+    });   
+}
+
+async function findId(id){
+    return new Promise((resolve, reject)=>{
+        Model.find({short_url: id})
+        .exec()
+        .then(data=>{
+            resolve(data)
+        })
+        .catch(e=>{
+            reject(e);
+        })
+    });   
 }
 
 async function addUrl(original_url, short_url){
@@ -32,6 +44,7 @@ async function addUrl(original_url, short_url){
 }
 
 module.exports={
-    findUrl,
+    findExistingUrl,
+    findId,
     addUrl
 }
