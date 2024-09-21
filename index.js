@@ -7,6 +7,7 @@ const db = require('./database');
 const controller = require('./controller');
 const { find } = require('./model');
 const uniqueId = require('short-unique-id');
+const isValidUrl=require('./services');
 
 // Basic Configuration
 const port = process.env.PORT || 3000;
@@ -36,7 +37,12 @@ app.get('/api/hello', function(req, res) {
 // FreeCodeCamp Challenge
 app.post('/api/shorturl', async function(req, res){
    const longUrl = req.body.url;
-   if(!longUrl) return;
+
+   const validateUrl = isValidUrl(longUrl);
+   console.log(validateUrl);
+   if(!validateUrl){
+    res.json({ error: 'invalid url' })
+   }
 
    const response = {
     original_url: "",
