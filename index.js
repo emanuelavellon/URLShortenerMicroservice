@@ -37,14 +37,13 @@ app.get('/api/hello', function(req, res) {
 // FreeCodeCamp Challenge
 app.post('/api/shorturl', async function(req, res){
    const longUrl = req.body.url;
-
-   const validateUrl = isValidUrl(longUrl);
-   console.log(validateUrl);
-   if(!validateUrl){
-    res.json({ error: 'invalid url' })
+   
+   if(!isValidUrl(longUrl)){
+    res.json({ error: 'invalid url' });
+    return;
    }
 
-   const response = {
+   let response = {
     original_url: "",
     short_url: ""
    };
@@ -53,18 +52,27 @@ app.post('/api/shorturl', async function(req, res){
 
    if(findedUrl.length===0){
     const shortUrl=uid.randomUUID();
-    const newUrl = await controller.addUrl(longUrl, shortUrl);
-    response.original_url = newUrl.original_url;//hacer desestrucutracion que aplaste
-    response.short_url = newUrl.short_url;
-   }else{
-    response.original_url = findedUrl[0].original_url;
-    response.short_url = findedUrl[0].short_url;
 
+    const newUrl = await controller.addUrl(longUrl, shortUrl);
+
+    response={
+      ...response,
+      original_url : newUrl.original_url,
+      short_url : newUrl.short_url
+    }
+    
+   }else{
+    response={
+      ...response,
+      original_url : findedUrl[0].original_url,
+      short_url : findedUrl[0].short_url
+    }
    }
 
    res.json(response);
 });
 
+// FreeCodeCamp Challenge
 app.get('/api/shorturl/:id', async function(req, res){
     const id = req.params.id;
     if(!id) return;
